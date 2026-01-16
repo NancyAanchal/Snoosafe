@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snoonu Postomat - Delivery</title>
+    <title>Snoonu Snoosafe - Delivery</title>
     <style>
         * {
             margin: 0;
@@ -22,7 +22,8 @@
 
         /* Header */
         .header {
-            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            /* background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%); */
+            background: #d90217;
             color: white;
             padding: 20px;
             display: flex;
@@ -96,7 +97,7 @@
         .stat-card .number {
             font-size: 28px;
             font-weight: bold;
-            color: #FF6B35;
+            color: #d90217;
             margin-bottom: 4px;
         }
 
@@ -124,7 +125,7 @@
             border-radius: 10px;
             padding: 16px;
             margin-bottom: 12px;
-            border-left: 4px solid #FF6B35;
+            border-left: 4px solid #d90217;
             cursor: pointer;
             transition: transform 0.2s;
         }
@@ -147,7 +148,7 @@
 
         .status {
             background: #FFE5D9;
-            color: #FF6B35;
+            color: #d90217;
             padding: 4px 10px;
             border-radius: 12px;
             font-size: 11px;
@@ -167,7 +168,8 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            /* background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%); */
+            background: #d90217;
             color: white;
             border: none;
             padding: 16px;
@@ -202,7 +204,7 @@
             width: 200px;
             height: 200px;
             margin: 0 auto 24px;
-            border: 3px dashed #FF6B35;
+            border: 3px dashed #d90217;
             border-radius: 16px;
             display: flex;
             align-items: center;
@@ -290,8 +292,8 @@
         }
 
         .compartment.selected {
-            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
-            border-color: #FF6B35;
+            background: #d90217;
+            border-color: #d90217;
             color: white;
             transform: scale(1.05);
         }
@@ -366,8 +368,8 @@
 
         .btn-secondary {
             background: white;
-            color: #FF6B35;
-            border: 2px solid #FF6B35;
+            color: #d90217;
+            border: 2px solid #d90217;
             padding: 16px;
             border-radius: 12px;
             font-size: 16px;
@@ -387,7 +389,7 @@
             width: 50px;
             height: 50px;
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #FF6B35;
+            border-top: 4px solid #d90217;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
@@ -444,11 +446,11 @@
             <div class="order-card" onclick="selectOrder('SN-45821')">
                 <div class="order-header">
                     <div class="order-id">#SN-45821</div>
-                    <div class="status">Ready for Postomat</div>
+                    <div class="status">Ready for Snoosafe</div>
                 </div>
                 <div class="customer-name">Fatima Al-Mohannadi</div>
-                <div class="address">📍 Postomat Location: Al Sadd, Near City Center</div>
-                <button class="btn-primary">Deliver to Postomat</button>
+                <div class="address">📍 Snoosafe Location: Al Sadd, Near City Center</div>
+                <button class="btn-primary">Deliver to Snoosafe</button>
             </div>
 
             <div class="order-card">
@@ -475,18 +477,18 @@
     <div id="page-scanner" class="page">
         <div class="header">
             <button class="back-btn" onclick="showPage('page-home')">←</button>
-            <div class="logo">Scan Postomat</div>
+            <div class="logo">Scan Snoosafe</div>
             <div></div>
         </div>
 
         <div class="scanner-container">
             <div class="scanner-box">
                 <div class="qr-icon">📷</div>
-                <div class="scanner-text">Point camera at Postomat QR</div>
+                <div class="scanner-text">Point camera at Snoosafe QR</div>
                 <div class="scanner-subtext">The QR code is on the front panel</div>
             </div>
 
-            <button class="btn-primary" onclick="simulateScan()">Simulate QR Scan</button>
+            <button class="btn-primary" onclick="simulateScan()">Scan QR</button>
         </div>
     </div>
 
@@ -498,7 +500,7 @@
 
         <div class="loading">
             <div class="spinner"></div>
-            <h3 style="color: #333; margin-bottom: 8px;">Connecting to Postomat...</h3>
+            <h3 style="color: #333; margin-bottom: 8px;">Connecting to Snoosafe...</h3>
             <p style="color: #666; font-size: 14px;">Checking available compartments</p>
         </div>
     </div>
@@ -526,7 +528,7 @@
                 <span class="info-value">Medium (30x25x15 cm)</span>
             </div>
             <div class="info-row">
-                <span class="info-label">Postomat Location</span>
+                <span class="info-label">Snoosafe Location</span>
                 <span class="info-value">Al Sadd - CS01</span>
             </div>
         </div>
@@ -619,7 +621,7 @@
         <div class="success-container">
             <div class="success-icon">✓</div>
             <h2 class="success-title">Delivery Complete!</h2>
-            <p class="success-subtitle">Package successfully placed in Postomat</p>
+            <p class="success-subtitle">Package successfully placed in Snoosafe</p>
 
             <div class="summary-box">
                 <div class="summary-row">
@@ -631,7 +633,7 @@
                     <span style="font-weight: 600;">B1 (Medium)</span>
                 </div>
                 <div class="summary-row">
-                    <span style="color: #666;">Postomat</span>
+                    <span style="color: #666;">Snoosafe</span>
                     <span style="font-weight: 600;">Al Sadd - CS01</span>
                 </div>
                 <div class="summary-row">
@@ -644,7 +646,7 @@
                 </div>
             </div>
 
-            <div style="background: #FFF3E0; border-radius: 12px; padding: 16px; margin: 20px 0; border-left: 4px solid #FF6B35;">
+            <div style="background: #FFF3E0; border-radius: 12px; padding: 16px; margin: 20px 0; border-left: 4px solid #d90217;">
                 <div style="font-size: 13px; color: #666;">
                     <strong style="color: #333;">Customer pickup code:</strong> Automatically sent via SMS to Fatima Al-Mohannadi
                 </div>
