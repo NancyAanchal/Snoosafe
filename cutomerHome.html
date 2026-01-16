@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snoonu - Order with Postomat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            max-width: 430px;
+            margin: 0 auto;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .cart-icon {
+            font-size: 24px;
+            position: relative;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: white;
+            color: #FF6B35;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        /* Cart Page */
+        .cart-container {
+            padding: 20px;
+        }
+
+        .cart-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FFE5D9 0%, #FFF3E0 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .item-restaurant {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .item-price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+
+        .subtotal-box {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .subtotal-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .subtotal-row.total {
+            border-top: 2px solid #f0f0f0;
+            margin-top: 8px;
+            padding-top: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        /* Delivery Options */
+        .delivery-options {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .delivery-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .delivery-card:hover {
+            border-color: #FF6B35;
+        }
+
+        .delivery-card.selected {
+            border-color: #FF6B35;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 140, 66, 0.05) 100%);
+        }
+
+        .delivery-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 28px;
+            height: 28px;
+            background: #FF6B35;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .delivery-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .delivery-icon {
+            font-size: 32px;
+        }
+
+        .delivery-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .delivery-subtitle {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .badge.new {
+            background: #FF6B35;
+        }
+
+        .badge.free {
+            background: #4CAF50;
+        }
+
+        /* Postomat Map */
+        .map-container {
+            padding: 20px;
+        }
+
+        .map-box {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            position: relative;
+        }
+
+        .map-markers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .marker {
+            position: absolute;
+            font-size: 32px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .marker.m1 { top: 30%; left: 40%; }
+        .marker.m2 { top: 60%; left: 60%; }
+        .marker.m3 { top: 45%; left: 25%; }
+
+        .postomat-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .postomat-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .postomat-item:hover {
+            border-color: #FF6B35;
+        }
+
+        .postomat-item.selected {
+            border-color: #FF6B35;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 140, 66, 0.05) 100%);
+        }
+
+        .postomat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .postomat-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .distance {
+            font-size: 12px;
+            color: #FF6B35;
+            font-weight: 600;
+        }
+
+        .postomat-address {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .availability {
+            display: flex;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .available-badge {
+            background: #E8F5E9;
+            color: #4CAF50;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        /* Order Tracking */
+        .tracking-container {
+            padding: 20px;
+        }
+
+        .status-banner {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .status-icon {
+            font-size: 60px;
+            margin-bottom: 12px;
+        }
+
+        .status-text {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .status-subtext {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .timeline {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 16px;
+            position: relative;
+            padding-bottom: 24px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 40px;
+            width: 2px;
+            height: calc(100% - 20px);
+            background: #e0e0e0;
+        }
+
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .timeline-item.completed .timeline-icon {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .timeline-item.active .timeline-icon {
+            background: #FF6B35;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .timeline-item.pending .timeline-icon {
+            background: #f0f0f0;
+            color: #999;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .timeline-time {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .order-details-box {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Pickup Page */
+        .pickup-container {
+            padding: 20px;
+        }
+
+        .pickup-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .pickup-icon {
+            font-size: 80px;
+            margin-bottom: 16px;
+        }
+
+        .pickup-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .pickup-subtitle {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .pickup-code {
+            background: #FFF3E0;
+            border: 2px dashed #FF6B35;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .code-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .code-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #FF6B35;
+            letter-spacing: 4px;
+        }
+
+        .info-box {
+            background: #E3F2FD;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 20px 0;
+            border-left: 4px solid #2196F3;
+        }
+
+        .info-box-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1976D2;
+            margin-bottom: 8px;
+        }
+
+        .info-box-text {
+            font-size: 13px;
+            color: #1976D2;
+            line-height: 1.5;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #FF6B35;
+            border: 2px solid #FF6B35;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        /* Scanner */
+        .scanner-container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .scanner-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 20px;
+            margin: 40px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .qr-icon {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 24px;
+            border: 3px dashed #FF6B35;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .scanner-text {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .scanner-subtext {
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* Success */
+        .success-container {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 60px;
+            color: white;
+            animation: scaleIn 0.5s;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .success-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .success-subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .rating-box {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .rating-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .stars {
+            font-size: 40px;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+        }
+
+        .star {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FF6B35;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Additional CSS for the new page (reuse existing styles where possible) */
+.pickup-code {
+    background: #FFF3E0;
+    border: 2px dashed #FF6B35;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.code-label {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.code-value {
+    font-size: 32px;
+    font-weight: bold;
+    color: #FF6B35;
+    letter-spacing: 4px;
+}
+
+.info-box {
+    background: #E3F2FD;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    border-left: 4px solid #2196F3;
+}
+
+.info-box-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1976D2;
+    margin-bottom: 8px;
+}
+
+.info-box-text {
+    font-size: 13px;
+    color: #1976D2;
+    line-height: 1.5;
+}
+
+/* Animation for compartment opening effect */
+.compartment-opening {
+    animation: compartmentOpen 1s ease-in-out;
+}
+
+@keyframes compartmentOpen {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%); }
+    100% { transform: scale(1); background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%); }
+}
+    </style>
+</head>
+<body>
+    <!-- Page 1: Cart -->
+    <div id="page-cart" class="page active">
+        <div class="header">
+            <div class="logo">🛒 Your Cart</div>
+            <div class="cart-icon">
+                🛍️
+                <span class="cart-badge">3</span>
+            </div>
+        </div>
+
+        <div class="cart-container">
+            <div class="cart-item">
+                <div class="item-image">🍔</div>
+                <div class="item-details">
+                    <div class="item-name">Beef Burger Combo</div>
+                    <div class="item-restaurant">The Burger House</div>
+                    <div class="item-price">45 QAR</div>
+                </div>
+            </div>
+
+            <div class="cart-item">
+                <div class="item-image">🍕</div>
+                <div class="item-details">
+                    <div class="item-name">Margherita Pizza</div>
+                    <div class="item-restaurant">Pizza Corner</div>
+                    <div class="item-price">55 QAR</div>
+                </div>
+            </div>
+
+            <div class="cart-item">
+                <div class="item-image">🥤</div>
+                <div class="item-details">
+                    <div class="item-name">Fresh Juice (2x)</div>
+                    <div class="item-restaurant">Juice Bar</div>
+                    <div class="item-price">20 QAR</div>
+                </div>
+            </div>
+
+            <div class="subtotal-box">
+                <div class="subtotal-row">
+                    <span>Subtotal</span>
+                    <span>120 QAR</span>
+                </div>
+                <div class="subtotal-row">
+                    <span>Service Fee</span>
+                    <span>5 QAR</span>
+                </div>
+                <div class="subtotal-row">
+                    <span>Delivery Fee</span>
+                    <span id="delivery-fee">15 QAR</span>
+                </div>
+                <div class="subtotal-row total">
+                    <span>Total</span>
+                    <span id="total-amount">140 QAR</span>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="showPage('page-delivery-options')">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Page 2: Delivery Options -->
+    <div id="page-delivery-options" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showPage('page-cart')">←</button>
+            <div class="logo">Delivery Method</div>
+            <div></div>
+        </div>
+
+        <div class="delivery-options">
+            <div class="section-title">Choose your delivery method</div>
+
+            <div class="delivery-card" onclick="selectDelivery('home')">
+                <div class="delivery-header">
+                    <div class="delivery-icon">🏠</div>
+                    <div>
+                        <div class="delivery-title">Home Delivery</div>
+                    </div>
+                </div>
+                <div class="delivery-subtitle">
+                    Delivered directly to your doorstep. Estimated time: 30-45 mins
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 16px; font-weight: 600; color: #FF6B35;">15 QAR</span>
+                </div>
+            </div>
+
+            <div class="delivery-card selected" onclick="selectDelivery('postomat')">
+                <div class="delivery-header">
+                    <div class="delivery-icon">📦</div>
+                    <div>
+                        <div class="delivery-title">Postomat Pickup</div>
+                    </div>
+                </div>
+                <div class="delivery-subtitle">
+                    Pick up from a secure smart locker near you. Available 24/7, rain or shine!
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <span style="font-size: 18px; font-weight: 600; color: #4CAF50;">FREE ✓</span>
+                    <div>
+                        <span class="badge new">NEW</span>
+                        <span class="badge free">FREE DELIVERY</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box" style="margin-top: 20px;">
+                <div class="info-box-title">💡 Why Choose Postomat?</div>
+                <div class="info-box-text">
+                    ✓ FREE delivery - save 15 QAR!<br>
+                    ✓ Pick up anytime within 24 hours<br>
+                    ✓ No need to wait at home<br>
+                    ✓ Safe & secure smart lockers
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="showPage('page-postomat-map')">
+                Continue with Postomat (Save 15 QAR!)
+            </button>
+            <button class="btn-secondary" onclick="alert('Home delivery selected')">
+                Deliver to Home Address
+            </button>
+        </div>
+    </div>
+
+    <!-- Page 3: Postomat Location Map -->
+    <div id="page-postomat-map" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showPage('page-delivery-options')">←</button>
+            <div class="logo">Select Postomat</div>
+            <div></div>
+        </div>
+
+        <div class="map-container">
+            <div class="map-box">
+                <div class="map-placeholder">
+                    🗺️
+                    <div class="map-markers">
+                        <div class="marker m1">📍</div>
+                        <div class="marker m2">📍</div>
+                        <div class="marker m3">📍</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">Nearby Postomats</div>
+
+            <div class="postomat-list">
+                <div class="postomat-item selected" onclick="selectPostomat(this, 'Al Sadd City Center')">
+                    <div class="postomat-header">
+                        <div class="postomat-name">📦 Al Sadd - City Center</div>
+                        <div class="distance">0.8 km</div>
+                    </div>
+                    <div class="postomat-address">
+                        Near City Center Mall, Al Sadd Street<br>
+                        Open 24/7
+                    </div>
+                    <div class="availability">
+                        <span class="available-badge">12 compartments available</span>
+                    </div>
+                </div>
+
+                <div class="postomat-item" onclick="selectPostomat(this, 'West Bay Tower')">
+                    <div class="postomat-header">
+                        <div class="postomat-name">📦 West Bay - Business District</div>
+                        <div class="distance">1.2 km</div>
+                    </div>
+                    <div class="postomat-address">
+                        Majlis Al Taawon Street, West Bay<br>
+                        Open 24/7
+                    </div>
+                    <div class="availability">
+                        <span class="available-badge">8 compartments available</span>
+                    </div>
+                </div>
+
+                <div class="postomat-item" onclick="selectPostomat(this, 'The Pearl')">
+                    <div class="postomat-header">
+                        <div class="postomat-name">📦 The Pearl - Porto Arabia</div>
+                        <div class="distance">2.5 km</div>
+                    </div>
+                    <div class="postomat-address">
+                        Porto Arabia, The Pearl-Qatar<br>
+                        Open 24/7
+                    </div>
+                    <div class="availability">
+                        <span class="available-badge">15 compartments available</span>
+                    </div>
+                </div>
+
+                <div class="postomat-item" onclick="selectPostomat(this, 'Lusail Marina')">
+                    <div class="postomat-header">
+                        <div class="postomat-name">📦 Lusail - Marina District</div>
+                        <div class="distance">3.1 km</div>
+                    </div>
+                    <div class="postomat-address">
+                        Marina Promenade, Lusail City<br>
+                        Open 24/7
+                    </div>
+                    <div class="availability">
+                        <span class="available-badge">10 compartments available</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick=" showPage('page-order-ready')" style="margin-top: 20px;">
+                Confirm Order
+            </button>
+        </div>
+    </div>
+
+    <!-- Page 5: Open Compartment -->
+    <div id="page-open" class="page">
+        <div class="header">
+            <div class="logo">Place Package</div>
+        </div>
+
+        <div class="scanner-container">
+    <div class="scanner-box" style="background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%); color: white;">
+        <div style="font-size: 80px; margin-bottom: 24px;">📦</div>
+        <div class="scanner-text" style="color: white; font-size: 22px;">Compartment B1 is OPEN</div>
+        <div class="scanner-subtext" style="color: rgba(255,255,255,0.9); margin-top: 12px;">
+            Grab your goodies and enjoy!
+        </div>
+    </div>
+
+    <div style="background: white; padding: 20px; border-radius: 12px; margin: 20px 0; text-align: left;">
+        <h4 style="color: #333; margin-bottom: 12px;">Pickup Instructions:</h4>
+        <ol style="color: #666; font-size: 14px; padding-left: 20px; line-height: 1.8;">
+            <li>Snag your items and make the most of them!</li>
+            <li>Have an awesome day and come back soon😊</li>
+            <li>Don't forget to drop a 5-star review!</li>
+        </ol>
+    </div>
+</div>
+
+            <button class="btn-primary" onclick="showPage('page-cart')">Done</button>
+        </div>
+    </div>
+
+    <!-- Page: Your Order is Here -->
+<div id="page-order-ready" class="page">
+    <div class="header">
+        <button class="back-btn" onclick="showPage('page-postomat-map')">←</button>
+        <div class="logo">📦 Order Ready</div>
+        <div></div>
+    </div>
+
+    <div class="pickup-container">
+        <div class="pickup-card">
+            <div class="pickup-icon">🔓</div>
+            <div class="pickup-title">Your Order is Here!</div>
+            <div class="pickup-subtitle">
+                Your delicious food is waiting in the secure compartment at Al Sadd - City Center Postomat. 
+                Tap the button below to unlock and retrieve your order.
+            </div>
+            
+            <div class="pickup-code">
+                <div class="code-label">Pickup Code</div>
+                <div class="code-value">A7B2C9</div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">🔒 Security Reminder</div>
+                <div class="info-box-text">
+                    Make sure you're at the correct postomat location. The compartment will only open with your unique code.
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="openCompartment()">Open Compartment</button>
+        </div>
+    </div>
+</div>
+
+   <!-- Page : QR Scanner -->
+    <div id="page-scanner" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showPage('page-order-ready')">←</button>
+            <div class="logo">Scan Postomat</div>
+            <div></div>
+        </div>
+
+        <div class="scanner-container">
+            <div class="scanner-box">
+                <div class="qr-icon">📷</div>
+                <div class="scanner-text">Point camera at Postomat QR</div>
+                <div class="scanner-subtext">The QR code is on the front panel</div>
+            </div>
+
+            <button class="btn-primary" onclick="simulateScan()">Simulate QR Scan</button>
+        </div>
+    </div>
+
+     <div id="page-loading" class="page">
+        <div class="header">
+            <div class="logo">🚚 Snoonu</div>
+        </div>
+
+        <div class="loading">
+            <div class="spinner"></div>
+            <h3 style="color: #333; margin-bottom: 8px;">Connecting to Postomat...</h3>
+            <p style="color: #666; font-size: 14px;">Opening your compartment</p>
+        </div>
+    </div>
+
+<script>
+       // Function to show a specific page by ID
+function showPage(pageId) {
+    // Hide all pages by removing the 'active' class
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    // Show the selected page by adding the 'active' class
+    document.getElementById(pageId).classList.add('active');
+}
+
+// Function to select a delivery option
+function selectDelivery(type) {
+    // Remove 'selected' class from all delivery cards
+    document.querySelectorAll('.delivery-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Add 'selected' class to the appropriate card based on type
+    if (type === 'home') {
+        // Assuming the first delivery-card is Home Delivery
+        document.querySelectorAll('.delivery-card')[0].classList.add('selected');
+        // Update delivery fee and total
+        document.getElementById('delivery-fee').textContent = '15 QAR';
+        document.getElementById('total-amount').textContent = '140 QAR';
+    } else if (type === 'postomat') {
+        // Assuming the second delivery-card is Postomat Pickup
+        document.querySelectorAll('.delivery-card')[1].classList.add('selected');
+        // Update delivery fee and total (free for postomat)
+        document.getElementById('delivery-fee').textContent = '0 QAR';
+        document.getElementById('total-amount').textContent = '125 QAR';
+    }
+}
+
+// Function to select a postomat location
+function selectPostomat(element, name) {
+    // Remove 'selected' class from all postomat items
+    document.querySelectorAll('.postomat-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    // Add 'selected' class to the clicked postomat item
+    element.classList.add('selected');
+}
+
+// Function to confirm the order (this could lead to payment or tracking, but since not in HTML, using an alert for now)
+function confirmOrder() {
+    const selectedPostomat = document.querySelector('.postomat-item.selected .postomat-name');
+    if (selectedPostomat) {
+        alert(`Order confirmed! Your order will be delivered to ${selectedPostomat.textContent}.`);
+        showPage('page-order-ready');
+            } else {
+        alert('Please select a postomat location first.');
+    }
+}
+
+ function openCompartment() {
+            // if (!selectedCompartment) return;
+            showPage('page-scanner');
+        }
+
+        // function simulateClose() {
+        //     showPage('page-loading');
+        //     setTimeout(() => {
+        //         showPage('page-success');
+        //     }, 1500);
+        // }
+
+            // showPage('page-loading');
+            // setTimeout(() => {
+            //     showPage('page-open');
+            // }, 2000);
+        
+        function simulateScan() {
+            showPage('page-loading');
+            setTimeout(() => {
+                showPage('page-open');
+            }, 2000);
+        }
+
+
+    </script>
+</body>
+</html>
+        

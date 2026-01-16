@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snoonu Postomat - Delivery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            max-width: 430px;
+            margin: 0 auto;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .delivery-badge {
+            background: rgba(255,255,255,0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Pages Container */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Home Page */
+        .greeting {
+            padding: 24px 20px;
+            background: white;
+        }
+
+        .greeting h2 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .greeting p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 12px;
+            padding: 0 20px 20px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #FF6B35;
+            margin-bottom: 4px;
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .active-orders {
+            background: white;
+            margin: 20px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .active-orders h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .order-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid #FF6B35;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .order-card:hover {
+            transform: translateX(4px);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .order-id {
+            font-weight: 600;
+            color: #333;
+            font-size: 15px;
+        }
+
+        .status {
+            background: #FFE5D9;
+            color: #FF6B35;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .customer-name {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .address {
+            color: #999;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 12px;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        /* QR Scanner Page */
+        .scanner-container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .scanner-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 20px;
+            margin: 40px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .qr-icon {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 24px;
+            border: 3px dashed #FF6B35;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .scanner-text {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .scanner-subtext {
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* Locker Selection */
+        .locker-info {
+            background: white;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .locker-info h3 {
+            color: #333;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .compartment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 20px;
+        }
+
+        .compartment {
+            aspect-ratio: 1;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .compartment.available {
+            border-color: #4CAF50;
+            background: #f1f8f4;
+        }
+
+        .compartment.selected {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            border-color: #FF6B35;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .compartment-number {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .compartment-size {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+
+        /* Success Page */
+        .success-container {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 60px;
+            color: white;
+            animation: scaleIn 0.5s;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .success-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .success-subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .summary-box {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #FF6B35;
+            border: 2px solid #FF6B35;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FF6B35;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page 1: Home / Active Deliveries -->
+    <div id="page-home" class="page active">
+        <div class="header">
+            <div class="logo">
+                🚚 Snoonu
+                <span class="delivery-badge">DELIVERY</span>
+            </div>
+        </div>
+
+        <div class="greeting">
+            <h2>Hello, Ahmed! 👋</h2>
+            <p>You have 3 active deliveries today</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number">12</div>
+                <div class="label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">3</div>
+                <div class="label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">98%</div>
+                <div class="label">Success Rate</div>
+            </div>
+        </div>
+
+        <div class="active-orders">
+            <h3>Active Deliveries</h3>
+            
+            <div class="order-card" onclick="selectOrder('SN-45821')">
+                <div class="order-header">
+                    <div class="order-id">#SN-45821</div>
+                    <div class="status">Ready for Postomat</div>
+                </div>
+                <div class="customer-name">Fatima Al-Mohannadi</div>
+                <div class="address">📍 Postomat Location: Al Sadd, Near City Center</div>
+                <button class="btn-primary">Deliver to Postomat</button>
+            </div>
+
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-id">#SN-45819</div>
+                    <div class="status">In Transit</div>
+                </div>
+                <div class="customer-name">Mohammed Hassan</div>
+                <div class="address">📍 West Bay, Tower 23, Floor 15</div>
+            </div>
+
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-id">#SN-45815</div>
+                    <div class="status">Picked Up</div>
+                </div>
+                <div class="customer-name">Sara Abdullah</div>
+                <div class="address">📍 The Pearl, Porto Arabia</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 2: QR Scanner -->
+    <div id="page-scanner" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showPage('page-home')">←</button>
+            <div class="logo">Scan Postomat</div>
+            <div></div>
+        </div>
+
+        <div class="scanner-container">
+            <div class="scanner-box">
+                <div class="qr-icon">📷</div>
+                <div class="scanner-text">Point camera at Postomat QR</div>
+                <div class="scanner-subtext">The QR code is on the front panel</div>
+            </div>
+
+            <button class="btn-primary" onclick="simulateScan()">Simulate QR Scan</button>
+        </div>
+    </div>
+
+    <!-- Page 3: Loading -->
+    <div id="page-loading" class="page">
+        <div class="header">
+            <div class="logo">🚚 Snoonu</div>
+        </div>
+
+        <div class="loading">
+            <div class="spinner"></div>
+            <h3 style="color: #333; margin-bottom: 8px;">Connecting to Postomat...</h3>
+            <p style="color: #666; font-size: 14px;">Checking available compartments</p>
+        </div>
+    </div>
+
+    <!-- Page 4: Compartment Selection -->
+    <div id="page-compartment" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showPage('page-scanner')">←</button>
+            <div class="logo">Select Compartment</div>
+            <div></div>
+        </div>
+
+        <div class="locker-info">
+            <h3>Order Details</h3>
+            <div class="info-row">
+                <span class="info-label">Order ID</span>
+                <span class="info-value">#SN-45821</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Customer</span>
+                <span class="info-value">Fatima Al-Mohannadi</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Package Size</span>
+                <span class="info-value">Medium (30x25x15 cm)</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Postomat Location</span>
+                <span class="info-value">Al Sadd - CS01</span>
+            </div>
+        </div>
+
+        <div style="padding: 0 20px; margin-bottom: 12px;">
+            <h3 style="color: #333; font-size: 16px;">Available Compartments (Recommended: Medium)</h3>
+        </div>
+
+        <div class="compartment-grid">
+            <div class="compartment">
+                <div class="compartment-number">A1</div>
+                <div class="compartment-size">Small</div>
+            </div>
+            <div class="compartment">
+                <div class="compartment-number">A2</div>
+                <div class="compartment-size">Small</div>
+            </div>
+            <div class="compartment available" onclick="selectCompartment(this, 'B1')">
+                <div class="compartment-number">B1</div>
+                <div class="compartment-size">Medium</div>
+            </div>
+            <div class="compartment available" onclick="selectCompartment(this, 'B2')">
+                <div class="compartment-number">B2</div>
+                <div class="compartment-size">Medium</div>
+            </div>
+            <div class="compartment available" onclick="selectCompartment(this, 'B3')">
+                <div class="compartment-number">B3</div>
+                <div class="compartment-size">Medium</div>
+            </div>
+            <div class="compartment available" onclick="selectCompartment(this, 'C1')">
+                <div class="compartment-number">C1</div>
+                <div class="compartment-size">Large</div>
+            </div>
+            <div class="compartment available" onclick="selectCompartment(this, 'C2')">
+                <div class="compartment-number">C2</div>
+                <div class="compartment-size">Large</div>
+            </div>
+            <div class="compartment">
+                <div class="compartment-number">C3</div>
+                <div class="compartment-size">Large</div>
+            </div>
+            <div class="compartment">
+                <div class="compartment-number">D1</div>
+                <div class="compartment-size">X-Large</div>
+            </div>
+        </div>
+
+        <div style="padding: 0 20px 20px;">
+            <button class="btn-primary" id="confirmBtn" onclick="openCompartment()" disabled style="opacity: 0.5;">
+                Select a Compartment
+            </button>
+        </div>
+    </div>
+
+    <!-- Page 5: Open Compartment -->
+    <div id="page-open" class="page">
+        <div class="header">
+            <div class="logo">Place Package</div>
+        </div>
+
+        <div class="scanner-container">
+            <div class="scanner-box" style="background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%); color: white;">
+                <div style="font-size: 80px; margin-bottom: 24px;">📦</div>
+                <div class="scanner-text" style="color: white; font-size: 22px;">Compartment B1 is OPEN</div>
+                <div class="scanner-subtext" style="color: rgba(255,255,255,0.9); margin-top: 12px;">
+                    Please place the package inside and close the door
+                </div>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 12px; margin: 20px 0; text-align: left;">
+                <h4 style="color: #333; margin-bottom: 12px;">Instructions:</h4>
+                <ol style="color: #666; font-size: 14px; padding-left: 20px; line-height: 1.8;">
+                    <li>Place the package carefully inside compartment B1</li>
+                    <li>Ensure the package is properly positioned</li>
+                    <li>Close the compartment door firmly</li>
+                    <li>Wait for confirmation beep</li>
+                </ol>
+            </div>
+
+            <button class="btn-primary" onclick="simulateClose()">I've Closed the Door</button>
+        </div>
+    </div>
+
+    <!-- Page 6: Success -->
+    <div id="page-success" class="page">
+        <div class="header">
+            <div class="logo">🚚 Snoonu</div>
+        </div>
+
+        <div class="success-container">
+            <div class="success-icon">✓</div>
+            <h2 class="success-title">Delivery Complete!</h2>
+            <p class="success-subtitle">Package successfully placed in Postomat</p>
+
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span style="color: #666;">Order ID</span>
+                    <span style="font-weight: 600;">#SN-45821</span>
+                </div>
+                <div class="summary-row">
+                    <span style="color: #666;">Compartment</span>
+                    <span style="font-weight: 600;">B1 (Medium)</span>
+                </div>
+                <div class="summary-row">
+                    <span style="color: #666;">Postomat</span>
+                    <span style="font-weight: 600;">Al Sadd - CS01</span>
+                </div>
+                <div class="summary-row">
+                    <span style="color: #666;">Time</span>
+                    <span style="font-weight: 600;">2:34 PM</span>
+                </div>
+                <div class="summary-row">
+                    <span style="color: #666;">Customer Notified</span>
+                    <span style="font-weight: 600; color: #4CAF50;">✓ SMS Sent</span>
+                </div>
+            </div>
+
+            <div style="background: #FFF3E0; border-radius: 12px; padding: 16px; margin: 20px 0; border-left: 4px solid #FF6B35;">
+                <div style="font-size: 13px; color: #666;">
+                    <strong style="color: #333;">Customer pickup code:</strong> Automatically sent via SMS to Fatima Al-Mohannadi
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="showPage('page-home')">Back to Deliveries</button>
+            <button class="btn-secondary" onclick="showPage('page-home')">View Delivery History</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedCompartment = null;
+        let currentOrder = null;
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function selectOrder(orderId) {
+            currentOrder = orderId;
+            showPage('page-scanner');
+        }
+
+        function simulateScan() {
+            showPage('page-loading');
+            setTimeout(() => {
+                showPage('page-compartment');
+            }, 2000);
+        }
+
+        function selectCompartment(element, compartmentId) {
+            // Remove previous selection
+            document.querySelectorAll('.compartment').forEach(c => {
+                c.classList.remove('selected');
+            });
+            
+            // Add selection to clicked compartment
+            element.classList.add('selected');
+            selectedCompartment = compartmentId;
+            
+            // Enable confirm button
+            const btn = document.getElementById('confirmBtn');
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.textContent = `Open Compartment ${compartmentId}`;
+        }
+
+        function openCompartment() {
+            if (!selectedCompartment) return;
+            showPage('page-open');
+        }
+
+        function simulateClose() {
+            showPage('page-loading');
+            setTimeout(() => {
+                showPage('page-success');
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
