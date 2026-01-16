@@ -72,6 +72,22 @@
         .btn-prototype:active {
             transform: scale(0.98);
         }
+
+        .btn-prototype {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #222;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-prototype:hover {
+  background-color: #444;
+}
+
     </style>
 </head>
 <body>
@@ -81,8 +97,13 @@
 
     <div class="prototype-container">
         <div class="prototype-title">Choose Your Experience</div>
-        <button class="btn-prototype" onclick="window.location.href='customerHome.html'">Customer Prototype</button>
-        <button class="btn-prototype" onclick="window.location.href='driverHome.html'">Delivery Guy Prototype</button>
+        <a href="./cutomerHome.html" class="btn-prototype">
+  Customer Prototype
+</a>
+
+<a href="./driverHome.html" class="btn-prototype">
+  Delivery Guy Prototype
+</a>
     </div>
 </body>
 </html>
